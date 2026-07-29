@@ -1323,7 +1323,7 @@ td.best {
   width: max-content;
   max-width: none;
   color: #c7d1d9;
-  font-size: clamp(16px, 1.25vw, 18px);
+  font-size: clamp(17px, 1.25vw, 19px);
   font-weight: 750;
   line-height: 1.4;
   letter-spacing: -0.012em;
