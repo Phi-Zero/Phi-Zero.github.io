@@ -169,6 +169,32 @@
     updateApplicationButtons();
   }
 
+  // Keep the source and transferred halves of each motion-transfer case aligned.
+  document.querySelectorAll('.transfer-video-pair').forEach(function (pair) {
+    var videos = pair.querySelectorAll('video');
+    if (videos.length !== 2) return;
+
+    var sourceVideo = videos[0];
+    var transferredVideo = videos[1];
+    function alignTransferredVideo() {
+      if (transferredVideo.readyState > 0 &&
+          Math.abs(transferredVideo.currentTime - sourceVideo.currentTime) > 0.12) {
+        transferredVideo.currentTime = sourceVideo.currentTime;
+      }
+    }
+
+    sourceVideo.addEventListener('play', function () {
+      alignTransferredVideo();
+      var playPromise = transferredVideo.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(function () { /* Browser autoplay policy may require a tap. */ });
+      }
+    });
+    sourceVideo.addEventListener('pause', function () { transferredVideo.pause(); });
+    sourceVideo.addEventListener('seeking', alignTransferredVideo);
+    sourceVideo.addEventListener('timeupdate', alignTransferredVideo);
+  });
+
   demoPanels.forEach(setupApplicationVideoList);
 
   if (demoPanels.length && 'IntersectionObserver' in window) {

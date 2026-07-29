@@ -1591,6 +1591,47 @@ td.best {
   object-fit: cover;
 }
 
+.transfer-video-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 12px 12px 0;
+}
+
+.transfer-video-column {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #d5dce1;
+  border-radius: 11px;
+  background: #eef2f4;
+}
+
+.transfer-video-label {
+  padding: 9px 12px;
+  border-bottom: 1px solid #d5dce1;
+  color: #66737d;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+}
+
+.transfer-video-column-output {
+  border-color: #bfd7ec;
+}
+
+.transfer-video-column-output .transfer-video-label {
+  border-bottom-color: #bfd7ec;
+  color: var(--blue);
+  background: #eaf3fb;
+}
+
+.transfer-motion-panel .transfer-video-column video {
+  width: 100%;
+  aspect-ratio: 1.75 / 1;
+  object-fit: cover;
+}
+
 .transfer-motion-panel .video-card figcaption {
   min-height: 0;
   color: var(--ink-soft);
