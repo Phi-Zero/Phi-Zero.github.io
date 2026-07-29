@@ -1,0 +1,1019 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PhiZero — Learning Physical Video World Model from In-the-wild Videos</title>
+  <meta name="description" content="PhiZero learns a compact physical language from in-the-wild videos, reasons about future world evolution, and renders it into video." />
+  <meta name="theme-color" content="#f7f8f5" />
+  <meta property="og:title" content="PhiZero: Learning Physical Video World Model from In-the-wild Videos" />
+  <meta property="og:description" content="A physical world model built around physical language." />
+  <meta property="og:image" content="../assets/img/phizero/motivation.png" />
+  <link rel="icon" type="image/png" href="../assets/img/phizero/logo.png" />
+  <link rel="stylesheet" href="../assets/css/styles.css" />
+</head>
+<body>
+
+<div class="scroll-progress" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="Primary navigation">
+  <a class="brand" href="#top" aria-label="PhiZero home">
+    <img src="../assets/img/phizero/logo.png" alt="" />
+    <span>PhiZero</span>
+  </a>
+  <button class="nav-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+    <span></span><span></span>
+  </button>
+  <ul class="sections">
+    <li><a href="#demos">Demos</a></li>
+    <li><a href="#overview">Motivation</a></li>
+    <li><a href="#method">Method</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#transfer">Transfer</a></li>
+    <li><a href="#paper">Paper</a></li>
+  </ul>
+</nav>
+
+<main id="top">
+  <header class="hero">
+    <div class="hero-glow hero-glow-blue" aria-hidden="true"></div>
+    <div class="hero-glow hero-glow-orange" aria-hidden="true"></div>
+    <div class="hero-copy">
+      <div class="eyebrow">
+        <span class="eyebrow-dot"></span>
+        Physical world model · Preprint 2026
+      </div>
+      <h1>
+        <span class="hero-name">
+          <img class="hero-symbol" src="../assets/img/phizero/logo.png" alt="" />
+          <img class="hero-wordmark" src="../assets/img/phizero/wordmark.png" alt="PhiZero" />
+        </span>
+        <span class="hero-title">Learning Physical Video World Model from In-the-wild Videos</span>
+      </h1>
+      <p class="hero-deck">
+        A physical world model that <strong>reasons in a compact, discrete physical language</strong>
+        before rendering future world evolution into video.
+      </p>
+
+      <div class="authors" aria-label="Authors">
+        <span>Shuyao Shang</span>
+        <span>Yuqi Wang<sup>†§</sup></span>
+        <span>Ruopeng Gao<sup>§</sup></span>
+        <span>Xu Chen<sup>§</sup></span>
+        <span>Tieniu Tan</span>
+        <span>Lue Fan<sup>✉</sup></span>
+        <span>Zhaoxiang Zhang<sup>✉</sup></span>
+      </div>
+      <div class="affiliation">NLPR, Institute of Automation, Chinese Academy of Sciences (CASIA)</div>
+      <div class="author-notes"><span>† Project leader</span><span>✉ Corresponding authors</span><span>§ Independent researcher</span></div>
+
+      <div class="hero-actions">
+        <a class="button button-primary" href="../PhiZero.pdf" target="_blank" rel="noopener">
+          <span class="button-icon">↗</span> Paper
+        </a>
+        <a class="button" href="#demos"><span class="button-icon">▶</span> Demos</a>
+        <a class="button button-muted" data-cfg="ARXIV_URL" aria-disabled="true">
+          ArXiv <span class="soon">Soon</span>
+        </a>
+        <a class="button button-muted" data-cfg="GITHUB_URL" aria-disabled="true">
+          Code <span class="soon">Soon</span>
+        </a>
+      </div>
+    </div>
+
+  </header>
+
+  <section id="overview" data-section="01">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">01 / Motivation</div>
+          <h2>From visual experience to physical language.</h2>
+        </div>
+      </div>
+
+      <figure class="paper-figure motivation-figure">
+        <img src="../assets/img/phizero/motivation.png" alt="Biological intelligence abstracts world regularities from visual experience, while PhiZero learns physical language from in-the-wild videos" />
+      </figure>
+
+      <div class="motivation-copy-block">
+        <p>
+          <strong>Biological intelligence abstracts reusable regularities from visual experience.
+          PhiZero brings the same idea to video world models by explicitly encoding how the world
+          changes.</strong>
+        </p>
+      </div>
+
+      <div class="abstract">
+        <p>
+          We introduce <strong>PhiZero</strong>, a physical world model built around
+          <em>physical language</em>: a compact discrete representation of state-transition patterns
+          learned self-supervisedly from in-the-wild videos. PhiZero follows a
+          <strong>reason-then-render</strong> paradigm. It first infers future evolution in the
+          physical-language space, then renders that transition into predicted video.
+        </p>
+      </div>
+
+      <div class="contribution-grid">
+        <article class="contribution">
+          <span class="contribution-num">A</span>
+          <h3>Physical language</h3>
+          <p>
+            A compact, discrete language of state transitions learned from diverse unlabeled videos,
+            separating world dynamics from visual appearance.
+          </p>
+        </article>
+        <article class="contribution">
+          <span class="contribution-num">B</span>
+          <h3>Reason, then render</h3>
+          <p>
+            An autoregressive VLM predicts physical language from a first frame and action intent;
+            a video diffusion model then renders the inferred evolution to videos.
+          </p>
+        </article>
+        <article class="contribution">
+          <span class="contribution-num">C</span>
+          <h3>A reusable interface</h3>
+          <p>
+            The same transition representation supports physical generation, interactive control,
+            and zero-shot transfer across appearances, embodiments, and domains.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="method" class="section-tinted" data-section="02">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">02 / Method</div>
+          <h2>Reason in transitions. Render in pixels.</h2>
+        </div>
+      </div>
+
+      <figure class="paper-figure wide-figure">
+        <img loading="lazy" src="../assets/img/phizero/Pipeline.webp" alt="The PhiZero physical language tokenizer and reasoner pipeline" />
+      </figure>
+
+      <div class="method-grid">
+        <article class="method-card">
+          <div class="method-card-top">
+            <div class="method-icon icon-orange">T</div>
+            <div>
+              <div class="method-label">Component 01</div>
+              <h3>Physical Language Tokenizer</h3>
+            </div>
+          </div>
+          <p>
+            <strong>A transition-level Q-Former attends to adjacent latent video states. FSQ converts
+            those features into a discrete physical language, while a diffusion decoder reconstructs
+            the video from the physical language and first frame.</strong>
+          </p>
+          <ul>
+            <li>Initialized from Wan2.2-5B</li>
+            <li>Transition-level temporal inductive bias</li>
+            <li>Appearance supplied through the first frame</li>
+          </ul>
+        </article>
+
+        <article class="method-card">
+          <div class="method-card-top">
+            <div class="method-icon icon-blue">R</div>
+            <div>
+              <div class="method-label">Component 02</div>
+              <h3>Physical Language Reasoner</h3>
+            </div>
+          </div>
+          <p>
+            <strong>A pretrained VLM takes the current visual state and an action intent, then
+            autoregressively predicts the physical-language sequence. The frozen decoder translates
+            that explicit transition plan back into video.</strong>
+          </p>
+          <ul>
+            <li>Initialized from Qwen3-VL-4B</li>
+            <li>Vocabulary extended with 25K atomic symbols</li>
+            <li>Continued pretraining followed by motion-rich SFT</li>
+          </ul>
+        </article>
+      </div>
+
+      <div class="data-block">
+        <div class="data-copy">
+          <div class="section-kicker">Training data</div>
+          <h3>From broad visual experience to motion-rich interactions.</h3>
+          <p>
+            Progressive filtering turns a 50K-hour in-the-wild pool into 10K hours for tokenizer
+            pretraining. A mix of real and simulated videos yields 5M clips for tokenizer SFT and
+            reasoner pretraining, then 1M high-motion-quality clips for reasoner SFT.
+          </p>
+        </div>
+        <figure class="paper-figure">
+          <img loading="lazy" src="../assets/img/phizero/Data.webp" alt="Hierarchical data curation pipeline" />
+          <figcaption>Hierarchical data curation for the tokenizer and reasoner.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="results" data-section="03">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">03 / Results</div>
+          <h2>Physical fidelity without hiding the dynamics.</h2>
+        </div>
+      </div>
+
+      <div class="benchmark-results">
+        <div class="benchmark-grid">
+          <div class="benchmark-card">
+            <div class="section-kicker">Physics-IQ Verified</div>
+            <div class="table-wrap">
+              <table class="benchmark-table">
+                <thead>
+                  <tr><th>Model</th><th>IQ-Score ↑</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Wan2.2-5B</td><td>21.2</td></tr>
+                  <tr><td>Sora 2</td><td>26.5</td></tr>
+                  <tr><td>Cosmos3-Nano</td><td>29.1</td></tr>
+                  <tr><td>Wan2.2-14B</td><td>32.2</td></tr>
+                  <tr><td>Hunyuan-Video</td><td>33.4</td></tr>
+                  <tr><td>Grok-Video</td><td>34.8</td></tr>
+                  <tr><td>Cosmos3-Super</td><td>39.5</td></tr>
+                  <tr class="ours"><td>PhiZero (Ours)</td><td>41.2</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="benchmark-card">
+            <div class="section-kicker">PhyGround</div>
+            <div class="table-wrap">
+              <table class="benchmark-table">
+                <thead>
+                  <tr><th>Model</th><th>Physics Score ↑</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>LTX-Video-19B</td><td>2.54</td></tr>
+                  <tr><td>LTX-Video-22B</td><td>2.56</td></tr>
+                  <tr><td>Wan2.2-5B</td><td>2.65</td></tr>
+                  <tr><td>Cosmos2.5-2B</td><td>2.70</td></tr>
+                  <tr><td>OmniWeaving</td><td>2.78</td></tr>
+                  <tr><td>Veo3.1</td><td>2.85</td></tr>
+                  <tr><td>Wan2.2-14B</td><td>2.90</td></tr>
+                  <tr class="ours"><td>PhiZero (Ours)</td><td>3.01</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="benchmark-card">
+            <div class="section-kicker">WorldModelBench</div>
+            <div class="table-wrap">
+              <table class="benchmark-table">
+                <thead>
+                  <tr><th>Model</th><th>Physics Adherence ↑</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Pandora</td><td>4.05</td></tr>
+                  <tr><td>OpenSora-Plan</td><td>3.85</td></tr>
+                  <tr><td>CogVideoX</td><td>3.88</td></tr>
+                  <tr><td>Mochi</td><td>4.14</td></tr>
+                  <tr><td>Luma</td><td>4.13</td></tr>
+                  <tr><td>Wan2.2-5B</td><td>4.51</td></tr>
+                  <tr><td>Runway</td><td>4.27</td></tr>
+                  <tr class="ours"><td>PhiZero (Ours)</td><td>4.88</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="benchmark-card">
+            <div class="section-kicker">IntPhys2</div>
+            <div class="table-wrap">
+              <table class="benchmark-table">
+                <thead>
+                  <tr><th>Model</th><th>Overall ↑</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Cosmos-4B</td><td>49.41</td></tr>
+                  <tr><td>Qwen-VL 2.5</td><td>52.27</td></tr>
+                  <tr><td>Gemini-1.5 Pro</td><td>52.27</td></tr>
+                  <tr><td>GPT-4o</td><td>53.75</td></tr>
+                  <tr><td>VideoMAEv2</td><td>53.75</td></tr>
+                  <tr><td>V-JEPA</td><td>53.75</td></tr>
+                  <tr><td>Gemini-2.5 Flash</td><td>55.63</td></tr>
+                  <tr class="ours"><td>PhiZero (Ours)</td><td>55.78</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <p class="benchmark-note">
+          Across all four benchmarks, PhiZero achieves the best selected physics metric, showing
+          that explicit physical-language reasoning improves both generation fidelity and physical understanding.
+        </p>
+      </div>
+
+      <div class="iq-carousel">
+        <div class="iq-carousel-bar">
+          <div class="section-kicker">Qualitative video comparisons</div>
+          <div class="iq-carousel-controls" aria-label="Video comparison navigation">
+            <button type="button" data-iq-direction="-1" aria-label="Previous comparison">←</button>
+            <button type="button" data-iq-direction="1" aria-label="Next comparison">→</button>
+          </div>
+        </div>
+
+        <div class="iq-comparison-list" role="region" aria-label="Physics-IQ video comparisons" tabindex="0">
+        <article class="iq-comparison-item">
+          <p class="iq-prompt">
+            <span>Prompt 01</span>
+            A brown tennis ball rolls straight out of a black pipe across a light beige coffee table
+            and strikes a small yellow rubber duck, with a mustard couch visible behind the table,
+            with the camera held in a fixed close view.
+          </p>
+          <div class="iq-video-pair">
+            <figure class="iq-video">
+              <figcaption>Wan2.2-5B</figcaption>
+              <video muted playsinline preload="metadata">
+                <source src="../assets/videos/phizero/iq-compare/case-01-wan.mp4" type="video/mp4" />
+              </video>
+            </figure>
+            <figure class="iq-video iq-video-ours">
+              <figcaption>PhiZero (Ours)</figcaption>
+              <video muted playsinline preload="metadata">
+                <source src="../assets/videos/phizero/iq-compare/case-01-phizero.mp4" type="video/mp4" />
+              </video>
+            </figure>
+          </div>
+        </article>
+
+        <article class="iq-comparison-item">
+          <p class="iq-prompt">
+            <span>Prompt 02</span>
+            A blue-black grabber holds a blue tennis ball over a mound of green kinetic sand on a
+            wooden table, then releases the ball into the soft pile, with clear colors and minimal
+            background clutter.
+          </p>
+          <div class="iq-video-pair">
+            <figure class="iq-video">
+              <figcaption>Wan2.2-5B</figcaption>
+              <video muted playsinline preload="metadata">
+                <source src="../assets/videos/phizero/iq-compare/case-02-wan.mp4" type="video/mp4" />
+              </video>
+            </figure>
+            <figure class="iq-video iq-video-ours">
+              <figcaption>PhiZero (Ours)</figcaption>
+              <video muted playsinline preload="metadata">
+                <source src="../assets/videos/phizero/iq-compare/case-02-phizero.mp4" type="video/mp4" />
+              </video>
+            </figure>
+          </div>
+        </article>
+
+        <article class="iq-comparison-item">
+          <p class="iq-prompt">
+            <span>Prompt 03</span>
+            A yellow tennis ball rolls from a black pipe onto a simple cardboard ramp propped by a
+            blue block on a light wooden table against a plain wall, in a bright indoor tabletop setup.
+          </p>
+          <div class="iq-video-pair">
+            <figure class="iq-video">
+              <figcaption>Wan2.2-5B</figcaption>
+              <video muted playsinline preload="metadata">
+                <source src="../assets/videos/phizero/iq-compare/case-03-wan.mp4" type="video/mp4" />
+              </video>
+            </figure>
+            <figure class="iq-video iq-video-ours">
+              <figcaption>PhiZero (Ours)</figcaption>
+              <video muted playsinline preload="metadata">
+                <source src="../assets/videos/phizero/iq-compare/case-03-phizero.mp4" type="video/mp4" />
+              </video>
+            </figure>
+          </div>
+        </article>
+
+        <article class="iq-comparison-item">
+          <p class="iq-prompt">
+            <span>Prompt 04</span>
+            A row of colorful wooden blocks stands on a wooden table beside a black platform, where
+            a rotating wooden stick swings clockwise and knocks the first block, with clear colors
+            and minimal background clutter.
+          </p>
+          <div class="iq-video-pair">
+            <figure class="iq-video">
+              <figcaption>Wan2.2-5B</figcaption>
+              <video muted playsinline preload="metadata">
+                <source src="../assets/videos/phizero/iq-compare/case-04-wan.mp4" type="video/mp4" />
+              </video>
+            </figure>
+            <figure class="iq-video iq-video-ours">
+              <figcaption>PhiZero (Ours)</figcaption>
+              <video muted playsinline preload="metadata">
+                <source src="../assets/videos/phizero/iq-compare/case-04-phizero.mp4" type="video/mp4" />
+              </video>
+            </figure>
+          </div>
+        </article>
+
+        <article class="iq-comparison-item">
+          <p class="iq-prompt">
+            <span>Prompt 05</span>
+            A yellow mug and a blue rectangular block rotate together around the center of a black
+            platform while a spotlight projects their large shadows onto the wall, with the camera
+            held in a fixed close view.
+          </p>
+          <div class="iq-video-pair">
+            <figure class="iq-video">
+              <figcaption>Wan2.2-5B</figcaption>
+              <video muted playsinline preload="metadata">
+                <source src="../assets/videos/phizero/iq-compare/case-05-wan.mp4" type="video/mp4" />
+              </video>
+            </figure>
+            <figure class="iq-video iq-video-ours">
+              <figcaption>PhiZero (Ours)</figcaption>
+              <video muted playsinline preload="metadata">
+                <source src="../assets/videos/phizero/iq-compare/case-05-phizero.mp4" type="video/mp4" />
+              </video>
+            </figure>
+          </div>
+        </article>
+
+        <article class="iq-comparison-item">
+          <p class="iq-prompt">
+            <span>Prompt 06</span>
+            A clear acrylic box suspended from an orange cord lowers over a tennis ball with a smiley
+            face on a wooden table, covering it from view, with the camera held in a fixed close view.
+          </p>
+          <div class="iq-video-pair">
+            <figure class="iq-video">
+              <figcaption>Wan2.2-5B</figcaption>
+              <video muted playsinline preload="metadata">
+                <source src="../assets/videos/phizero/iq-compare/case-06-wan.mp4" type="video/mp4" />
+              </video>
+            </figure>
+            <figure class="iq-video iq-video-ours">
+              <figcaption>PhiZero (Ours)</figcaption>
+              <video muted playsinline preload="metadata">
+                <source src="../assets/videos/phizero/iq-compare/case-06-phizero.mp4" type="video/mp4" />
+              </video>
+            </figure>
+          </div>
+        </article>
+
+        <article class="iq-comparison-item">
+          <p class="iq-prompt">
+            <span>Prompt 07</span>
+            A tennis ball hanging in front of a mirror is slowly lowered, while the mirror creates a
+            second reflected ball beside it in the frame, with the camera held in a fixed close view.
+          </p>
+          <div class="iq-video-pair">
+            <figure class="iq-video">
+              <figcaption>Wan2.2-5B</figcaption>
+              <video muted playsinline preload="metadata">
+                <source src="../assets/videos/phizero/iq-compare/case-07-wan.mp4" type="video/mp4" />
+              </video>
+            </figure>
+            <figure class="iq-video iq-video-ours">
+              <figcaption>PhiZero (Ours)</figcaption>
+              <video muted playsinline preload="metadata">
+                <source src="../assets/videos/phizero/iq-compare/case-07-phizero.mp4" type="video/mp4" />
+              </video>
+            </figure>
+          </div>
+        </article>
+        </div>
+      </div>
+
+      <div class="tokenizer-result">
+        <div>
+          <div class="section-kicker">Compact representation</div>
+          <h3>175× fewer tokens than a dense VAE representation.</h3>
+          <p>
+            A four-second, 33-frame video is encoded with 256 discrete physical-language symbols,
+            compared with 44,800 continuous tokens for the Wan2.2 VAE, while retaining strong
+            reconstruction quality among highly compressed tokenizers.
+          </p>
+        </div>
+        <div class="token-ratio" aria-label="Token comparison">
+          <div class="ratio-row">
+            <span>Wan2.2 VAE</span><div class="ratio-track"><i style="width:100%"></i></div><strong>44,800</strong>
+          </div>
+          <div class="ratio-row ratio-ours">
+            <span>PhiZero</span><div class="ratio-track"><i style="width:1.2%"></i></div><strong>256</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="recon-carousel">
+        <div class="recon-carousel-bar">
+          <div class="section-kicker">Tokenizer reconstruction examples</div>
+          <div class="recon-carousel-controls" aria-label="Reconstruction video navigation">
+            <button type="button" data-recon-direction="-1" aria-label="Previous reconstruction">←</button>
+            <button type="button" data-recon-direction="1" aria-label="Next reconstruction">→</button>
+          </div>
+        </div>
+        <div class="recon-video-list" role="region" aria-label="Original and reconstructed video examples" tabindex="0">
+          <article class="recon-video-card">
+            <div class="recon-video-pair">
+              <figure class="recon-video">
+                <figcaption>Original Video</figcaption>
+                <video muted playsinline preload="auto">
+                  <source src="../assets/videos/phizero/recon/recon-01-original.mp4" type="video/mp4" />
+                </video>
+              </figure>
+              <figure class="recon-video recon-video-output">
+                <figcaption>Reconstructed Video</figcaption>
+                <video muted playsinline preload="auto">
+                  <source src="../assets/videos/phizero/recon/recon-01-reconstructed.mp4" type="video/mp4" />
+                </video>
+              </figure>
+            </div>
+          </article>
+          <article class="recon-video-card">
+            <div class="recon-video-pair">
+              <figure class="recon-video">
+                <figcaption>Original Video</figcaption>
+                <video muted playsinline preload="auto">
+                  <source src="../assets/videos/phizero/recon/recon-02-original.mp4" type="video/mp4" />
+                </video>
+              </figure>
+              <figure class="recon-video recon-video-output">
+                <figcaption>Reconstructed Video</figcaption>
+                <video muted playsinline preload="auto">
+                  <source src="../assets/videos/phizero/recon/recon-02-reconstructed.mp4" type="video/mp4" />
+                </video>
+              </figure>
+            </div>
+          </article>
+          <article class="recon-video-card">
+            <div class="recon-video-pair">
+              <figure class="recon-video">
+                <figcaption>Original Video</figcaption>
+                <video muted playsinline preload="auto">
+                  <source src="../assets/videos/phizero/recon/recon-03-original.mp4" type="video/mp4" />
+                </video>
+              </figure>
+              <figure class="recon-video recon-video-output">
+                <figcaption>Reconstructed Video</figcaption>
+                <video muted playsinline preload="auto">
+                  <source src="../assets/videos/phizero/recon/recon-03-reconstructed.mp4" type="video/mp4" />
+                </video>
+              </figure>
+            </div>
+          </article>
+          <article class="recon-video-card">
+            <div class="recon-video-pair">
+              <figure class="recon-video">
+                <figcaption>Original Video</figcaption>
+                <video muted playsinline preload="auto">
+                  <source src="../assets/videos/phizero/recon/recon-04-original.mp4" type="video/mp4" />
+                </video>
+              </figure>
+              <figure class="recon-video recon-video-output">
+                <figcaption>Reconstructed Video</figcaption>
+                <video muted playsinline preload="auto">
+                  <source src="../assets/videos/phizero/recon/recon-04-reconstructed.mp4" type="video/mp4" />
+                </video>
+              </figure>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="demos" class="section-dark" data-section="00">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">00 / Demos</div>
+          <h2>What PhiZero Can Do.</h2>
+        </div>
+        <p>
+          Explore physical-language transfer, fine-grained action conditioning, cross-embodiment
+          retargeting, and sim-to-real rendering.
+        </p>
+      </div>
+
+      <div id="demo-generation" class="demo-panel">
+        <div class="application-heading"><span>01</span><h3>Physical Generation</h3></div>
+        <div class="video-grid video-grid-standard application-video-list generation-page-list">
+          <div class="generation-page" aria-label="Physical generation examples 1 to 6">
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/wisa_000069_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>Close-up slow-motion shot of vibrant red, orange, and yellow bell pepper slices falling onto glistening hot oil in a dark non-stick frying pan, sending dramatic oil splashes spraying upward.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/longvideogen_000030_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>Backlit ocean waves roll steadily toward a rocky shore, then break and crash against dark wet rocks, sending bright white foam splashing outward.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/wisa_000217_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>A small aluminum can is engulfed by a violent slow-motion explosion on a dark wooden surface, with bright orange flames and scattered flying fragments.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/longvideogen_000480_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>Dark hot coffee pours steadily from a shiny metal pot into a patterned glass mug beside scattered roasted coffee beans on a light wooden table, with soft steam curling upward against a deep black background.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/wisa_000885_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>A tight close-up view shows a person pouring thick white steamed milk into a tilted white ceramic cup of rich brown espresso, starting to form a circular latte art pattern under warm dim lighting.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/longvideogen_000514_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>A high-angle aerial view captures foamy turquoise ocean waves that swirl and break, crashing continuously against a large dark heart-shaped rock under bright natural coastal daylight.</figcaption>
+            </figure>
+          </div>
+
+          <div class="generation-page" aria-label="Physical generation examples 7 to 12">
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/wisa_000882_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>A person pours frothy steamed milk from a polished stainless steel pitcher into a ceramic coffee cup, crafting intricate swirling layered latte art atop rich brown espresso.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/longvideogen_000499_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>A dark bottle appears beside burning charcoal in a metal fire pit as bright golden flames surge and twist upward against a deep dark background.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/longvideogen_000078_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>A fanned, partially sliced pale white onion falls and bounces on a wet brown surface in slow motion, sending glistening water droplets splashing upward against a softly blurred muted gray background.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/longvideogen_000532_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>A large frothy ocean wave surges and crashes forcefully against jagged brown coastal rocks, sending bright white spray bursting high above the shore.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/longvideogen_000280_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>A silhouetted person stands in calm golden lake water at sunset, then raises both arms to send glowing, backlit water splashes upward against a warm orange sky.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/longvideogen_000953_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>A stream of light-brown coffee pours from an off-screen container into a clear glass mug resting on a white saucer atop a light wooden table, lit by soft warm ambient light.</figcaption>
+            </figure>
+          </div>
+
+          <div class="generation-page" aria-label="Physical generation examples 13 to 18">
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/longvideogen_000664_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>A turquoise ocean wave rises and breaks toward the camera at golden sunset, its foamy crest spreading across the frame.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/longvideogen_000086_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>A pre-sliced whole orange bursts apart in slow motion, sending bright orange juice splashing outward as its segments spread across a smooth, vibrant monochromatic orange surface.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/longvideogen_000290_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>Multiple glossy red apples bounce and roll across a wet dark wooden surface, sending tiny water droplets splashing upward against a warm rustic wooden background in smooth slow motion.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/longvideogen_000761_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>A close-up slow-motion shot captures a dark liquid splash, with a central jet, scattered droplets, and spreading ripples against a softly blurred pale background.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/longvideogen_000635_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>Several whole vegetables drop into a stainless steel pot of water, sending bright energetic splashes upward on a rustic wooden countertop.</figcaption>
+            </figure>
+            <figure class="video-card">
+              <video muted loop playsinline preload="metadata">
+                <source src="../assets/videos/phizero/generated-video/longvideogen_000096_processed.mp4" type="video/mp4" />
+              </video>
+              <figcaption>Turbulent ocean waves crash against dark coastal boulders and break onto a shallow sandy shore under a bright cloudless blue sky, sending bright white foam and water splashes into the air.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+
+      <div id="demo-interactive" class="demo-panel">
+        <div class="application-heading"><span>02</span><h3>Interactive Worlds</h3></div>
+        <div class="video-grid video-grid-standard application-video-list">
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/interactive_alien.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Alien landscape.</strong> Keyboard inputs navigate among sculptural rock spires while the twin moons and distant landmarks remain coherent.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/interactive_moonlake.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Moonlit lake.</strong> Sequential movement and camera commands carry the viewpoint from a lakeside lodge toward the dark shoreline while preserving the moonlit scene.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/interactive_coast.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Coastal village.</strong> Directional inputs explore a seaside settlement while the white cottages, shoreline, and ocean horizon stay spatially consistent.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/interactive_sunset.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Sunset field.</strong> Keyboard controls move through a glowing grassland around trees and water while maintaining the sunset environment.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div id="demo-driving" class="demo-panel">
+        <div class="application-heading"><span>03</span><h3>Driving Control</h3></div>
+        <div class="video-grid application-video-list">
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/driving_1.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Action-conditioned driving.</strong> We show the outputs conditioned on five different input control signals.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/driving_4.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Action-conditioned driving.</strong> We show the outputs conditioned on five different input control signals.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/driving_3.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Action-conditioned driving.</strong> We show the outputs conditioned on five different input control signals.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/driving_2.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Action-conditioned driving.</strong> We show the outputs conditioned on five different input control signals.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div id="demo-robot" class="demo-panel">
+        <div class="application-heading"><span>04</span><h3>Robot Control</h3></div>
+        <div class="video-grid video-grid-square application-video-list">
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/robot_4.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Action-conditioned manipulation.</strong> The robotic arm scoops yellow pellets and deposits them into a cup.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/robot_3.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Action-conditioned manipulation.</strong> Two robotic arms coordinate to reposition a rectangular container across the table.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/robot_2.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Action-conditioned manipulation.</strong> Two robotic arms coordinate to transfer a red object from one gripper to the other.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/robot_1.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Action-conditioned manipulation.</strong> The robotic arm picks up a crumpled tissue and places it into the yellow bin.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div id="demo-body-transfer" class="demo-panel single-video-panel">
+        <div class="application-heading"><span>05</span><h3>Cross-Embodiment Transfer: Human-body Motion Into G1-humanoid</h3></div>
+        <div class="video-grid application-video-list">
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/body2humanoid_2.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Human → G1 humanoid.</strong> A person pushes a collapsible wagon forward, and the G1 humanoid follows the same leaning posture and arm trajectory.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/body2humanoid_4.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Human → G1 humanoid.</strong> A low crawling motion across outdoor steps is retargeted to the G1 humanoid while preserving the coordinated whole-body pose.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/body2humanoid_3.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Human → G1 humanoid.</strong> A person manipulates a large black storage case on a table, and the G1 humanoid reproduces the upper-body interaction.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/body2humanoid_1.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Human → G1 humanoid.</strong> A person lifts a white basket from the table, and PhiZero transfers the coordinated whole-body motion to a G1 humanoid.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div id="demo-hand-transfer" class="demo-panel single-video-panel">
+        <div class="application-heading"><span>06</span><h3>Cross-Embodiment Transfer: Human-hand Motion Into Sharpa-dexterous</h3></div>
+        <div class="video-grid application-video-list">
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/hand2dex_3.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Human hand → Sharpa dexterous hand.</strong> A human hand rolls and repositions a red ball, and the Sharpa hand reproduces the contact-rich finger motion.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/hand2dex_2.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Human hand → Sharpa dexterous hand.</strong> A human hand grips and lifts a yellow bowl by its rim, transferring the grasp and wrist trajectory to the Sharpa hand.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/hand2dex_1.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Human hand → Sharpa dexterous hand.</strong> A human hand grasps and lifts a turquoise tool, and PhiZero transfers the fine-grained finger and wrist motion to the Sharpa dexterous hand.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div id="demo-sim2real" class="demo-panel single-video-panel">
+        <div class="application-heading"><span>07</span><h3>Simulation-to-Real</h3></div>
+        <div class="video-grid application-video-list">
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/sim2real_2.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Simulation → reality.</strong> A robot reaches for and lifts a bottle, preserving the simulated gripper trajectory under realistic appearance.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/sim2real_1.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Simulation → reality.</strong> A robot picks up a bottle and places it into a basket, transferring the simulated interaction into a realistic scene.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/sim2real_3.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Simulation → reality.</strong> A robot moves a small object toward a bowl while the simulated manipulation is rendered in a realistic workspace.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="transfer" data-section="05">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">05 / Transfer</div>
+          <h2>Change the appearance. Keep the transition.</h2>
+        </div>
+        <p>
+          Because physical language encodes how the world changes rather than how it looks, the same
+          transition can be rendered with a new object, scene, embodiment, or visual domain.
+        </p>
+      </div>
+
+      <div class="transfer-method-note">
+        <h3>Motion transfer through physical language.</h3>
+        <p>
+          PhiZero first tokenizes a source transition into a discrete physical-language sequence that
+          describes how the state changes. It then combines that sequence with an edited or newly
+          selected first frame, allowing the video decoder to render the same transition under a new
+          object, appearance, material, or embodiment.
+        </p>
+        <p>
+          The Human → G1 humanoid, Human hand → Sharpa dexterous hand, and Simulation → reality demos
+          above use the same recipe: reuse the source physical language while replacing the visual
+          state from which the transition is rendered.
+        </p>
+      </div>
+
+      <div id="transfer-motion-cases" class="demo-panel single-video-panel transfer-motion-panel">
+        <div class="application-heading">
+          <span>Motion transfer cases</span>
+          <h3>Reuse the transition. Change the appearance.</h3>
+        </div>
+        <div class="video-grid application-video-list">
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/general_transfer_1.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Appearance transfer.</strong> The same pouring transition is preserved as white rice is replaced by brown lentils.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/general_transfer_2.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Appearance transfer.</strong> A viscous pouring motion is rendered consistently with light batter and chocolate batter.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/general_transfer_3.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Appearance transfer.</strong> The spoon-to-bread pouring trajectory transfers from a honey-like syrup to a red sauce.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/general_transfer_cf1.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Counterfactual material transfer.</strong> The falling motion of a white sheet of paper is transferred to an iron plate.</figcaption>
+          </figure>
+          <figure class="video-card">
+            <video muted loop playsinline preload="metadata">
+              <source src="../assets/videos/phizero/general_transfer_cf2.mp4#t=0.1" type="video/mp4" />
+            </video>
+            <figcaption><strong>Counterfactual material transfer.</strong> The falling motion of a cotton ball is transferred to a stone.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="paper" class="section-tinted" data-section="06">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <div class="section-kicker">06 / Paper</div>
+          <h2>Read and cite PhiZero.</h2>
+        </div>
+        <p>
+          The current manuscript is available as a preprint. Public ArXiv and code links can be
+          activated from the site configuration as soon as they are released.
+        </p>
+      </div>
+
+      <div class="paper-grid">
+        <div class="paper-download">
+          <img src="../assets/img/phizero/logo.png" alt="" />
+          <div>
+            <div class="paper-type">Preprint · 2026</div>
+            <h3>PhiZero: Learning Physical Video World Model from In-the-wild Videos</h3>
+            <p>Shuyao Shang, Yuqi Wang, Ruopeng Gao, Xu Chen, Tieniu Tan, Lue Fan, Zhaoxiang Zhang</p>
+            <a class="button button-primary" href="../PhiZero.pdf" target="_blank" rel="noopener">Open PDF ↗</a>
+          </div>
+        </div>
+
+        <div class="citation">
+          <div class="citation-top">
+            <span>BibTeX</span>
+            <button class="bibtex-copy" type="button">Copy</button>
+          </div>
+          <pre class="bibtex">@article{shang2026phizero,
+  title   = {PhiZero: Learning Physical Video World
+             Model from In-the-wild Videos},
+  author  = {Shang, Shuyao and Wang, Yuqi and
+             Gao, Ruopeng and Chen, Xu and Tan, Tieniu and
+             Fan, Lue and Zhang, Zhaoxiang},
+  year    = {2026},
+  note    = {Preprint}
+}</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <a class="footer-brand" href="#top">
+    <img src="../assets/img/phizero/logo.png" alt="" />
+    <span>PhiZero</span>
+  </a>
+  <p>NLPR · Institute of Automation · Chinese Academy of Sciences</p>
+  <p class="footer-meta">Physical language for physical world models · <span id="footer-year">2026</span></p>
+</footer>
+
+<script src="../config.js"></script>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
