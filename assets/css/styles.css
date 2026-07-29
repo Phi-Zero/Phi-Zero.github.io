@@ -1319,6 +1319,17 @@ td.best {
   color: #9daab5;
 }
 
+#demos .section-heading > p {
+  width: max-content;
+  max-width: none;
+  color: #c7d1d9;
+  font-size: clamp(16px, 1.25vw, 18px);
+  font-weight: 750;
+  line-height: 1.4;
+  letter-spacing: -0.012em;
+  white-space: nowrap;
+}
+
 .demo-panel {
   min-height: 0;
 }
