@@ -37,12 +37,12 @@ assets/
 
 ## Release links
 
-ArXiv and GitHub buttons intentionally show `Soon` until public URLs are added:
+ArXiv remains marked `Soon`; the Code button links to the public placeholder repository:
 
 ```js
 window.PHIZERO_CONFIG = {
   ARXIV_URL: "https://arxiv.org/abs/...",
-  GITHUB_URL: "https://github.com/...",
+  GITHUB_URL: "https://github.com/yaoyao-jpg/PhiZero",
   YEAR: "2026"
 };
 ```

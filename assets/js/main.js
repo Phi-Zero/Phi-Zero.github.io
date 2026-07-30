@@ -44,6 +44,8 @@
     element.setAttribute('rel', 'noopener');
     element.removeAttribute('aria-disabled');
     element.classList.remove('button-muted');
+    var soon = element.querySelector('.soon');
+    if (soon) soon.remove();
   });
   var year = document.getElementById('footer-year');
   if (year && config.YEAR) year.textContent = config.YEAR;
