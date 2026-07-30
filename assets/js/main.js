@@ -88,8 +88,10 @@
     navLinks.forEach(function (link) { link.addEventListener('click', closeNavigation); });
   }
 
-  // Expanded application list: play only the groups currently in view.
-  var demoPanels = Array.prototype.slice.call(document.querySelectorAll('.demo-panel'));
+  // Demo videos: play only the panels currently in view.
+  var demoPanels = Array.prototype.slice.call(
+    document.querySelectorAll('.demo-panel, .mosaic-demo-panel')
+  );
   function pauseDemoVideos(panel) {
     panel.setAttribute('data-demo-visible', 'false');
     panel.querySelectorAll('video').forEach(function (video) { video.pause(); });
@@ -97,7 +99,22 @@
 
   function updateVisibleDemoVideos(panel) {
     var track = panel.querySelector('.application-video-list');
-    if (!track || panel.getAttribute('data-demo-visible') !== 'true') return;
+    if (panel.getAttribute('data-demo-visible') !== 'true') return;
+
+    if (!track) {
+      panel.querySelectorAll('video').forEach(function (video) {
+        video.muted = true;
+        video.defaultMuted = true;
+        video.autoplay = true;
+        video.playsInline = true;
+        var mosaicPlayPromise = video.play();
+        if (mosaicPlayPromise && typeof mosaicPlayPromise.catch === 'function') {
+          mosaicPlayPromise.catch(function () { /* Browser autoplay policy may require a tap. */ });
+        }
+      });
+      return;
+    }
+
     var trackBounds = track.getBoundingClientRect();
 
     panel.querySelectorAll('video').forEach(function (video) {

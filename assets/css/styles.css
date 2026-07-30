@@ -15,7 +15,7 @@
   --green-soft: #e8f3e9;
   --night: #111820;
   --night-soft: #18232e;
-  --max: 1180px;
+  --max: 1080px;
   --nav-h: 68px;
   --sans: Inter, "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
   --mono: "SFMono-Regular", "Cascadia Code", "Roboto Mono", Consolas, monospace;
@@ -370,10 +370,11 @@ video {
   bottom: -2px;
   left: 0;
   height: 1px;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform 160ms ease;
+  background: var(--ink);
+  opacity: 0.42;
+  transform: scaleX(1);
+  transform-origin: left;
+  transition: opacity 160ms ease;
 }
 
 .authors a:hover,
@@ -383,8 +384,7 @@ video {
 
 .authors a:hover::after,
 .authors a:focus-visible::after {
-  transform: scaleX(1);
-  transform-origin: left;
+  opacity: 1;
 }
 
 .affiliation {
@@ -1317,6 +1317,120 @@ td.best {
   background: #090d11;
 }
 
+.mosaic-showcase-section {
+  padding-top: clamp(72px, 7.5vw, 108px);
+  padding-bottom: clamp(86px, 9vw, 124px);
+  color: var(--ink);
+  background: var(--paper-bright);
+}
+
+.section-dark.mosaic-showcase-section {
+  color: #f5f7f8;
+}
+
+.section-dark.mosaic-showcase-section .mosaic-showcase-heading h2,
+.section-dark.mosaic-showcase-section .mosaic-demo-panel h3 {
+  color: #f5f7f8;
+}
+
+.section-dark.mosaic-showcase-section .mosaic-pair-labels span {
+  color: #c3cdd5;
+}
+
+.mosaic-showcase-heading {
+  margin-bottom: clamp(54px, 7vw, 82px);
+  text-align: center;
+}
+
+.mosaic-showcase-heading h2 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: clamp(40px, 4.6vw, 58px);
+  font-weight: 720;
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.mosaic-demo-panel + .mosaic-demo-panel {
+  margin-top: clamp(58px, 7.5vw, 92px);
+}
+
+.demo-tldr {
+  margin: 0 0 22px;
+  color: #d8dee4;
+  font-size: clamp(16px, 1.65vw, 20px);
+  font-weight: 430;
+  line-height: 1.55;
+  letter-spacing: -0.012em;
+}
+
+.demo-tldr strong {
+  color: #fff;
+  font-weight: 800;
+}
+
+.demo-reel-frame video {
+  aspect-ratio: 1.75 / 1;
+}
+
+.mosaic-demo-panel h3 {
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: clamp(21px, 2.35vw, 30px);
+  font-weight: 650;
+  line-height: 1.14;
+  letter-spacing: -0.025em;
+  text-align: center;
+}
+
+.mosaic-video-frame,
+.live-video-mosaic {
+  width: 100%;
+  overflow: hidden;
+  background: #090d11;
+}
+
+.mosaic-video-frame video {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  background: #090d11;
+}
+
+.mosaic-pair-labels {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  width: 100%;
+}
+
+.mosaic-pair-labels span {
+  padding: 0 8px 8px;
+  color: var(--ink-soft);
+  font-size: clamp(11px, 1.3vw, 16px);
+  font-weight: 720;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.live-video-mosaic {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+}
+
+.live-video-mosaic video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1.75 / 1;
+  margin: 0;
+  object-fit: cover;
+  background: #090d11;
+}
+
 .section-dark {
   border-color: rgba(255, 255, 255, 0.08);
   color: #f5f7f8;
@@ -2119,6 +2233,30 @@ footer p {
 
   .video-grid {
     grid-template-columns: 1fr;
+  }
+
+  .mosaic-showcase-heading {
+    margin-bottom: 48px;
+  }
+
+  .mosaic-showcase-heading h2 {
+    font-size: clamp(38px, 11vw, 52px);
+  }
+
+  .mosaic-demo-panel + .mosaic-demo-panel {
+    margin-top: 52px;
+  }
+
+  .mosaic-demo-panel h3 {
+    margin-bottom: 13px;
+    font-size: clamp(21px, 6vw, 28px);
+  }
+
+  .mosaic-pair-labels span {
+    padding-right: 3px;
+    padding-bottom: 6px;
+    padding-left: 3px;
+    font-size: clamp(8px, 2.6vw, 11px);
   }
 
   #demos .application-video-list .video-card {
