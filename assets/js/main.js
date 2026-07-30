@@ -103,13 +103,30 @@
 
     if (!track) {
       panel.querySelectorAll('video').forEach(function (video) {
-        video.muted = true;
-        video.defaultMuted = true;
+        var requestedVolumeAttribute = video.getAttribute('data-default-volume');
+        var requestedVolume = Number(requestedVolumeAttribute);
+        var wantsSound = requestedVolumeAttribute !== null && Number.isFinite(requestedVolume);
+        if (wantsSound) {
+          video.volume = Math.min(1, Math.max(0, requestedVolume));
+          video.muted = false;
+          video.defaultMuted = false;
+        } else {
+          video.muted = true;
+          video.defaultMuted = true;
+        }
         video.autoplay = true;
         video.playsInline = true;
         var mosaicPlayPromise = video.play();
         if (mosaicPlayPromise && typeof mosaicPlayPromise.catch === 'function') {
-          mosaicPlayPromise.catch(function () { /* Browser autoplay policy may require a tap. */ });
+          mosaicPlayPromise.catch(function () {
+            if (!wantsSound) return;
+            video.muted = true;
+            video.defaultMuted = true;
+            var mutedFallback = video.play();
+            if (mutedFallback && typeof mutedFallback.catch === 'function') {
+              mutedFallback.catch(function () { /* Browser autoplay policy may require a tap. */ });
+            }
+          });
         }
       });
       return;
