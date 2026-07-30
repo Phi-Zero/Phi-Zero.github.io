@@ -2,7 +2,7 @@
 
 Static project page for:
 
-> **PhiZero: Learning Physical Video World Model from In-the-wild Videos**
+> **PhiZero: A World Model Built Around Physical Language**
 
 The page presents the paper overview, method, results, physical-generation demos,
 interactive worlds, action-conditioned control, and zero-shot motion transfer.
@@ -15,13 +15,13 @@ From this directory:
 python3 -m http.server 8000
 ```
 
-Then open <http://localhost:8000/>. The root page redirects to `/en/`.
+Then open <http://localhost:8000/>.
 
 ## Structure
 
 ```text
-index.html                  # root redirect
-en/index.html               # project page
+index.html                  # project page
+en/index.html               # legacy redirect to the root page
 config.js                   # public ArXiv / GitHub URLs
 PhiZero.pdf                 # paper
 assets/
@@ -31,7 +31,11 @@ assets/
   videos/phizero/           # curated demos from /Users/bytedance/Desktop/demo
 ```
 
-## Public links
+## Public site
+
+<https://Phi-Zero.github.io/>
+
+## Release links
 
 ArXiv and GitHub buttons intentionally show `Soon` until public URLs are added:
 

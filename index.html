@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PhiZero — Learning Physical Video World Model from In-the-wild Videos</title>
-  <meta name="description" content="PhiZero learns a compact physical language from in-the-wild videos, reasons about future world evolution, and renders it into video." />
+  <title>PhiZero — A World Model Built Around Physical Language</title>
+  <meta name="description" content="PhiZero is a world model built around physical language, a compact discrete representation of world-state transitions learned from in-the-wild videos." />
   <meta name="theme-color" content="#f7f8f5" />
-  <link rel="canonical" href="https://yaoyao-jpg.github.io/Phi-Zero/" />
-  <meta property="og:title" content="PhiZero: Learning Physical Video World Model from In-the-wild Videos" />
-  <meta property="og:description" content="A physical world model built around physical language." />
-  <meta property="og:image" content="./assets/img/phizero/motivation.png" />
+  <link rel="canonical" href="https://Phi-Zero.github.io/" />
+  <meta property="og:title" content="PhiZero: A World Model Built Around Physical Language" />
+  <meta property="og:description" content="A world model that explicitly reasons about world evolution in a compact discrete physical language before rendering it into video." />
+  <meta property="og:image" content="https://Phi-Zero.github.io/assets/img/phizero/motivation.png?v=20260731" />
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/phizero/favicon-32.png?v=2" />
   <link rel="shortcut icon" href="./assets/img/phizero/favicon-32.png?v=2" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/phizero/apple-touch-icon.png?v=2" />
@@ -51,11 +51,11 @@
           <img class="hero-symbol" src="./assets/img/phizero/logo.png" alt="" />
           <img class="hero-wordmark" src="./assets/img/phizero/wordmark.png" alt="PhiZero" />
         </span>
-        <span class="hero-title">Learning Physical Video World Model from In-the-wild Videos</span>
+        <span class="hero-title">A World Model Built Around Physical Language</span>
       </h1>
       <p class="hero-deck">
-        A physical world model that <strong>reasons in a compact, discrete physical language</strong>
-        before rendering future world evolution into video.
+        A world model that <strong>explicitly reasons about world evolution in physical language</strong>
+        before rendering the inferred transitions into video.
       </p>
 
       <div class="authors" aria-label="Authors">
@@ -71,7 +71,7 @@
       <div class="author-notes"><span>† Project leader</span><span>✉ Corresponding authors</span><span>§ Independent researcher</span></div>
 
       <div class="hero-actions">
-        <a class="button button-primary" href="./PhiZero.pdf" target="_blank" rel="noopener">
+        <a class="button button-primary" href="./PhiZero.pdf?v=20260731" target="_blank" rel="noopener">
           <span class="button-icon">↗</span> Paper
         </a>
         <a class="button" href="#demos"><span class="button-icon">▶</span> Demos</a>
@@ -91,29 +91,30 @@
       <div class="section-heading">
         <div>
           <div class="section-kicker">01 / Motivation</div>
-          <h2>From visual experience to physical language.</h2>
+          <h2>From visual experience to physical-language reasoning.</h2>
         </div>
       </div>
 
       <figure class="paper-figure motivation-figure">
-        <img src="./assets/img/phizero/motivation.png" alt="Biological intelligence abstracts world regularities from visual experience, while PhiZero learns physical language from in-the-wild videos" />
+        <img src="./assets/img/phizero/motivation.png?v=20260731" alt="Humans organize predictive structure from visual experience in natural language, while PhiZero learns a finer-grained physical language from in-the-wild videos" />
       </figure>
 
       <div class="motivation-copy-block">
         <p>
-          <strong>Biological intelligence abstracts reusable regularities from visual experience.
-          PhiZero brings the same idea to video world models by explicitly encoding how the world
-          changes.</strong>
+          <strong>Humans abstract predictive structure from visual experience and organize it in
+          natural language for explicit reasoning. Because natural language is too coarse for complex
+          physical transitions, PhiZero learns a finer-grained physical language directly from
+          in-the-wild videos.</strong>
         </p>
       </div>
 
       <div class="abstract">
         <p>
-          We introduce <strong>PhiZero</strong>, a physical world model built around
-          <em>physical language</em>: a compact discrete representation of state-transition patterns
-          learned self-supervisedly from in-the-wild videos. PhiZero follows a
-          <strong>reason-then-render</strong> paradigm. It first infers future evolution in the
-          physical-language space, then renders that transition into predicted video.
+          We introduce <strong>PhiZero</strong>, a world model built around
+          <em>physical language</em>: a compact discrete representation of world-state transitions
+          learned from unlabeled in-the-wild videos through self-supervision. PhiZero follows a
+          <strong>reason-then-render</strong> paradigm: it first infers future world evolution as a
+          physical-language sequence, then renders the inferred transitions into video.
         </p>
       </div>
 
@@ -122,24 +123,24 @@
           <span class="contribution-num">A</span>
           <h3>Physical language</h3>
           <p>
-            A compact, discrete language of state transitions learned from diverse unlabeled videos,
-            separating world dynamics from visual appearance.
+            A compact discrete representation of world-state transitions learned at scale from
+            unlabeled in-the-wild videos.
           </p>
         </article>
         <article class="contribution">
           <span class="contribution-num">B</span>
           <h3>Reason, then render</h3>
           <p>
-            An autoregressive VLM predicts physical language from a first frame and action intent;
-            a video diffusion model then renders the inferred evolution to videos.
+            An autoregressive VLM predicts a physical-language sequence from the current visual state
+            and action intent; a trained diffusion decoder renders the inferred transition into video.
           </p>
         </article>
         <article class="contribution">
           <span class="contribution-num">C</span>
           <h3>A reusable interface</h3>
           <p>
-            The same transition representation supports physical generation, interactive control,
-            and zero-shot transfer across appearances, embodiments, and domains.
+            The same transition representation supports physically realistic generation,
+            fine-grained action-conditioned simulation, interactive rollouts, and zero-shot transfer.
           </p>
         </article>
       </div>
@@ -151,7 +152,7 @@
       <div class="section-heading">
         <div>
           <div class="section-kicker">02 / Method</div>
-          <h2>Reason in transitions. Render in pixels.</h2>
+          <h2>Reason in physical language. Render into video.</h2>
         </div>
       </div>
 
@@ -169,14 +170,14 @@
             </div>
           </div>
           <p>
-            <strong>A transition-level Q-Former attends to adjacent latent video states. FSQ converts
-            those features into a discrete physical language, while a diffusion decoder reconstructs
-            the video from the physical language and first frame.</strong>
+            <strong>A transition-level Q-Former extracts ordered features from adjacent latent video
+            states. FSQ discretizes them into physical language, while a diffusion-prior decoder
+            reconstructs the video from that sequence and the clean first frame.</strong>
           </p>
           <ul>
-            <li>Initialized from Wan2.2-5B</li>
-            <li>Transition-level temporal inductive bias</li>
-            <li>Appearance supplied through the first frame</li>
+            <li>Wan2.2 VAE encoder + Wan2.2-5B diffusion decoder</li>
+            <li>32 queries per adjacent latent-state transition</li>
+            <li>First-frame conditioning + pure-noise warm-up</li>
           </ul>
         </article>
 
@@ -189,9 +190,9 @@
             </div>
           </div>
           <p>
-            <strong>A pretrained VLM takes the current visual state and an action intent, then
-            autoregressively predicts the physical-language sequence. The frozen decoder translates
-            that explicit transition plan back into video.</strong>
+            <strong>A Qwen3-VL-4B-initialized autoregressive VLM predicts a physical-language sequence
+            from the first frame and textual action intent. The trained diffusion decoder then renders
+            the inferred state transition into a future video.</strong>
           </p>
           <ul>
             <li>Initialized from Qwen3-VL-4B</li>
@@ -206,14 +207,15 @@
           <div class="section-kicker">Training data</div>
           <h3>From broad visual experience to motion-rich interactions.</h3>
           <p>
-            Progressive filtering turns a 50K-hour in-the-wild pool into 10K hours for tokenizer
-            pretraining. A mix of real and simulated videos yields 5M clips for tokenizer SFT and
-            reasoner pretraining, then 1M high-motion-quality clips for reasoner SFT.
+            Progressive filtering turns a 50K-hour in-the-wild real-world pool into 10K hours for
+            tokenizer pretraining. Real and simulated videos yield 5M four-second clips for tokenizer
+            SFT and reasoner pretraining, followed by 1M motion-rich and physically informative clips
+            for reasoner SFT.
           </p>
         </div>
         <figure class="paper-figure">
           <img loading="lazy" src="./assets/img/phizero/Data.webp" alt="Hierarchical data curation pipeline" />
-          <figcaption>Hierarchical data curation for the tokenizer and reasoner.</figcaption>
+          <figcaption>Hierarchical curation for tokenizer pretraining/SFT and reasoner pretraining/SFT.</figcaption>
         </figure>
       </div>
     </div>
@@ -224,7 +226,7 @@
       <div class="section-heading">
         <div>
           <div class="section-kicker">03 / Results</div>
-          <h2>Physical fidelity without hiding the dynamics.</h2>
+          <h2>Physical coherence across generation and understanding.</h2>
         </div>
       </div>
 
@@ -302,13 +304,13 @@
                 </thead>
                 <tbody>
                   <tr><td>Cosmos-4B</td><td>49.41</td></tr>
-                  <tr><td>Qwen-VL 2.5</td><td>52.27</td></tr>
+                  <tr><td>Qwen2.5-VL</td><td>52.27</td></tr>
                   <tr><td>Gemini-1.5 Pro</td><td>52.27</td></tr>
                   <tr><td>GPT-4o</td><td>53.75</td></tr>
                   <tr><td>VideoMAEv2</td><td>53.75</td></tr>
                   <tr><td>V-JEPA</td><td>53.75</td></tr>
                   <tr><td>Gemini-2.5 Flash</td><td>55.63</td></tr>
-                  <tr class="ours"><td>PhiZero (Ours)</td><td>55.78</td></tr>
+                  <tr class="ours"><td>PhiZero (Ours)</td><td>56.34</td></tr>
                 </tbody>
               </table>
             </div>
@@ -316,8 +318,9 @@
         </div>
 
         <p class="benchmark-note">
-          Across all four benchmarks, PhiZero achieves the best selected physics metric, showing
-          that explicit physical-language reasoning improves both generation fidelity and physical understanding.
+          Across the four displayed benchmarks, PhiZero leads the selected physical metric:
+          IQ-Score, Physics Score, Physics Adherence, and IntPhys2 Overall. The results support both
+          physically coherent generation and intuitive physics understanding.
         </p>
       </div>
 
@@ -1015,9 +1018,9 @@
           <img src="./assets/img/phizero/logo.png" alt="" />
           <div>
             <div class="paper-type">Preprint · 2026</div>
-            <h3>PhiZero: Learning Physical Video World Model from In-the-wild Videos</h3>
+            <h3>PhiZero: A World Model Built Around Physical Language</h3>
             <p>Shuyao Shang, Yuqi Wang, Ruopeng Gao, Xu Chen, Tieniu Tan, Lue Fan, Zhaoxiang Zhang</p>
-            <a class="button button-primary" href="./PhiZero.pdf" target="_blank" rel="noopener">Open PDF ↗</a>
+            <a class="button button-primary" href="./PhiZero.pdf?v=20260731" target="_blank" rel="noopener">Open PDF ↗</a>
           </div>
         </div>
 
@@ -1027,8 +1030,8 @@
             <button class="bibtex-copy" type="button">Copy</button>
           </div>
           <pre class="bibtex">@article{shang2026phizero,
-  title   = {PhiZero: Learning Physical Video World
-             Model from In-the-wild Videos},
+  title   = {PhiZero: A World Model Built Around
+             Physical Language},
   author  = {Shang, Shuyao and Wang, Yuqi and
              Gao, Ruopeng and Chen, Xu and Tan, Tieniu and
              Fan, Lue and Zhang, Zhaoxiang},
