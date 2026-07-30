@@ -13,7 +13,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/img/phizero/favicon-32.png?v=2" />
   <link rel="shortcut icon" href="./assets/img/phizero/favicon-32.png?v=2" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/img/phizero/apple-touch-icon.png?v=2" />
-  <link rel="stylesheet" href="./assets/css/styles.css?v=20260730b" />
+  <link rel="stylesheet" href="./assets/css/styles.css?v=20260731b" />
 </head>
 <body>
 
@@ -723,79 +723,189 @@
         </div>
       </div>
 
-      <div id="demo-body-transfer" class="demo-panel single-video-panel">
+      <div id="demo-body-transfer" class="demo-panel single-video-panel embodied-transfer-panel">
         <div class="application-heading"><h3>Cross-Embodiment Transfer: Human-body Motion Into G1-humanoid</h3></div>
         <div class="video-grid application-video-list">
-          <figure class="video-card">
-            <video muted loop playsinline preload="metadata">
-              <source src="./assets/videos/phizero/body2humanoid_2.mp4#t=0.1" type="video/mp4" />
-            </video>
+          <figure class="video-card transfer-video-card">
+            <div class="transfer-video-pair">
+              <div class="transfer-video-column">
+                <div class="transfer-video-label">Source Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/body2humanoid_2_source.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+              <div class="transfer-video-column transfer-video-column-output">
+                <div class="transfer-video-label">Transferred Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/body2humanoid_2_transferred.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+            </div>
             <figcaption><strong>Human → G1 humanoid.</strong> A person pushes a collapsible wagon forward, and the G1 humanoid follows the same leaning posture and arm trajectory.</figcaption>
           </figure>
-          <figure class="video-card">
-            <video muted loop playsinline preload="metadata">
-              <source src="./assets/videos/phizero/body2humanoid_4.mp4#t=0.1" type="video/mp4" />
-            </video>
+          <figure class="video-card transfer-video-card">
+            <div class="transfer-video-pair">
+              <div class="transfer-video-column">
+                <div class="transfer-video-label">Source Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/body2humanoid_4_source.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+              <div class="transfer-video-column transfer-video-column-output">
+                <div class="transfer-video-label">Transferred Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/body2humanoid_4_transferred.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+            </div>
             <figcaption><strong>Human → G1 humanoid.</strong> A low crawling motion across outdoor steps is retargeted to the G1 humanoid while preserving the coordinated whole-body pose.</figcaption>
           </figure>
-          <figure class="video-card">
-            <video muted loop playsinline preload="metadata">
-              <source src="./assets/videos/phizero/body2humanoid_3.mp4#t=0.1" type="video/mp4" />
-            </video>
+          <figure class="video-card transfer-video-card">
+            <div class="transfer-video-pair">
+              <div class="transfer-video-column">
+                <div class="transfer-video-label">Source Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/body2humanoid_3_source.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+              <div class="transfer-video-column transfer-video-column-output">
+                <div class="transfer-video-label">Transferred Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/body2humanoid_3_transferred.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+            </div>
             <figcaption><strong>Human → G1 humanoid.</strong> A person manipulates a large black storage case on a table, and the G1 humanoid reproduces the upper-body interaction.</figcaption>
           </figure>
-          <figure class="video-card">
-            <video muted loop playsinline preload="metadata">
-              <source src="./assets/videos/phizero/body2humanoid_1.mp4#t=0.1" type="video/mp4" />
-            </video>
+          <figure class="video-card transfer-video-card">
+            <div class="transfer-video-pair">
+              <div class="transfer-video-column">
+                <div class="transfer-video-label">Source Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/body2humanoid_1_source.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+              <div class="transfer-video-column transfer-video-column-output">
+                <div class="transfer-video-label">Transferred Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/body2humanoid_1_transferred.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+            </div>
             <figcaption><strong>Human → G1 humanoid.</strong> A person lifts a white basket from the table, and PhiZero transfers the coordinated whole-body motion to a G1 humanoid.</figcaption>
           </figure>
         </div>
       </div>
 
-      <div id="demo-hand-transfer" class="demo-panel single-video-panel">
+      <div id="demo-hand-transfer" class="demo-panel single-video-panel embodied-transfer-panel">
         <div class="application-heading"><h3>Cross-Embodiment Transfer: Human-hand Motion Into Sharpa-dexterous</h3></div>
         <div class="video-grid application-video-list">
-          <figure class="video-card">
-            <video muted loop playsinline preload="metadata">
-              <source src="./assets/videos/phizero/hand2dex_3.mp4#t=0.1" type="video/mp4" />
-            </video>
+          <figure class="video-card transfer-video-card">
+            <div class="transfer-video-pair">
+              <div class="transfer-video-column">
+                <div class="transfer-video-label">Source Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/hand2dex_3_source.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+              <div class="transfer-video-column transfer-video-column-output">
+                <div class="transfer-video-label">Transferred Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/hand2dex_3_transferred.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+            </div>
             <figcaption><strong>Human hand → Sharpa dexterous hand.</strong> A human hand rolls and repositions a red ball, and the Sharpa hand reproduces the contact-rich finger motion.</figcaption>
           </figure>
-          <figure class="video-card">
-            <video muted loop playsinline preload="metadata">
-              <source src="./assets/videos/phizero/hand2dex_2.mp4#t=0.1" type="video/mp4" />
-            </video>
+          <figure class="video-card transfer-video-card">
+            <div class="transfer-video-pair">
+              <div class="transfer-video-column">
+                <div class="transfer-video-label">Source Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/hand2dex_2_source.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+              <div class="transfer-video-column transfer-video-column-output">
+                <div class="transfer-video-label">Transferred Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/hand2dex_2_transferred.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+            </div>
             <figcaption><strong>Human hand → Sharpa dexterous hand.</strong> A human hand grips and lifts a yellow bowl by its rim, transferring the grasp and wrist trajectory to the Sharpa hand.</figcaption>
           </figure>
-          <figure class="video-card">
-            <video muted loop playsinline preload="metadata">
-              <source src="./assets/videos/phizero/hand2dex_1.mp4#t=0.1" type="video/mp4" />
-            </video>
+          <figure class="video-card transfer-video-card">
+            <div class="transfer-video-pair">
+              <div class="transfer-video-column">
+                <div class="transfer-video-label">Source Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/hand2dex_1_source.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+              <div class="transfer-video-column transfer-video-column-output">
+                <div class="transfer-video-label">Transferred Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/hand2dex_1_transferred.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+            </div>
             <figcaption><strong>Human hand → Sharpa dexterous hand.</strong> A human hand grasps and lifts a turquoise tool, and PhiZero transfers the fine-grained finger and wrist motion to the Sharpa dexterous hand.</figcaption>
           </figure>
         </div>
       </div>
 
-      <div id="demo-sim2real" class="demo-panel single-video-panel">
+      <div id="demo-sim2real" class="demo-panel single-video-panel embodied-transfer-panel">
         <div class="application-heading"><h3>Sim-to-Real Transfer</h3></div>
         <div class="video-grid application-video-list">
-          <figure class="video-card">
-            <video muted loop playsinline preload="metadata">
-              <source src="./assets/videos/phizero/sim2real_2.mp4#t=0.1" type="video/mp4" />
-            </video>
+          <figure class="video-card transfer-video-card">
+            <div class="transfer-video-pair">
+              <div class="transfer-video-column">
+                <div class="transfer-video-label">Source Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/sim2real_2_source.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+              <div class="transfer-video-column transfer-video-column-output">
+                <div class="transfer-video-label">Transferred Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/sim2real_2_transferred.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+            </div>
             <figcaption><strong>Simulation → reality.</strong> A robot reaches for and lifts a bottle, preserving the simulated gripper trajectory under realistic appearance.</figcaption>
           </figure>
-          <figure class="video-card">
-            <video muted loop playsinline preload="metadata">
-              <source src="./assets/videos/phizero/sim2real_1.mp4#t=0.1" type="video/mp4" />
-            </video>
+          <figure class="video-card transfer-video-card">
+            <div class="transfer-video-pair">
+              <div class="transfer-video-column">
+                <div class="transfer-video-label">Source Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/sim2real_1_source.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+              <div class="transfer-video-column transfer-video-column-output">
+                <div class="transfer-video-label">Transferred Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/sim2real_1_transferred.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+            </div>
             <figcaption><strong>Simulation → reality.</strong> A robot picks up a bottle and places it into a basket, transferring the simulated interaction into a realistic scene.</figcaption>
           </figure>
-          <figure class="video-card">
-            <video muted loop playsinline preload="metadata">
-              <source src="./assets/videos/phizero/sim2real_3.mp4#t=0.1" type="video/mp4" />
-            </video>
+          <figure class="video-card transfer-video-card">
+            <div class="transfer-video-pair">
+              <div class="transfer-video-column">
+                <div class="transfer-video-label">Source Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/sim2real_3_source.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+              <div class="transfer-video-column transfer-video-column-output">
+                <div class="transfer-video-label">Transferred Video</div>
+                <video muted loop playsinline preload="metadata">
+                  <source src="./assets/videos/phizero/sim2real_3_transferred.mp4#t=0.1" type="video/mp4" />
+                </video>
+              </div>
+            </div>
             <figcaption><strong>Simulation → reality.</strong> A robot moves a small object toward a bowl while the simulated manipulation is rendered in a realistic workspace.</figcaption>
           </figure>
         </div>

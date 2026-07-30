@@ -1474,6 +1474,31 @@ td.best {
   scroll-snap-align: start;
 }
 
+.embodied-transfer-panel .transfer-video-column {
+  border-color: #364653;
+  background: #0b1117;
+}
+
+.embodied-transfer-panel .transfer-video-label {
+  border-bottom-color: #364653;
+  color: #c3cdd5;
+  background: #151f28;
+}
+
+.embodied-transfer-panel .transfer-video-column-output {
+  border-color: #3975a2;
+}
+
+.embodied-transfer-panel .transfer-video-column-output .transfer-video-label {
+  border-bottom-color: #3975a2;
+  color: #91c9f6;
+  background: #152738;
+}
+
+.embodied-transfer-panel .video-card figcaption {
+  min-height: 0;
+}
+
 #demo-body-transfer .application-heading h3,
 #demo-hand-transfer .application-heading h3 {
   font-size: clamp(22px, 2.6vw, 31px);
@@ -1604,12 +1629,32 @@ td.best {
 
 .transfer-video-pair {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr);
+  gap: 8px;
   padding: 12px 12px 0;
 }
 
+.transfer-video-pair::after {
+  content: "→";
+  grid-column: 2;
+  grid-row: 1;
+  place-self: center;
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 1px solid #bfd7ec;
+  border-radius: 999px;
+  color: var(--blue);
+  background: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+}
+
 .transfer-video-column {
+  grid-column: 1;
+  grid-row: 1;
   min-width: 0;
   overflow: hidden;
   border: 1px solid #d5dce1;
@@ -1628,6 +1673,7 @@ td.best {
 }
 
 .transfer-video-column-output {
+  grid-column: 3;
   border-color: #bfd7ec;
 }
 
@@ -1637,10 +1683,17 @@ td.best {
   background: #eaf3fb;
 }
 
-.transfer-motion-panel .transfer-video-column video {
+.transfer-motion-panel .transfer-video-column video,
+.embodied-transfer-panel .transfer-video-column video {
   width: 100%;
   aspect-ratio: 1.75 / 1;
   object-fit: cover;
+}
+
+.embodied-transfer-panel .transfer-video-pair::after {
+  border-color: #3975a2;
+  color: #91c9f6;
+  background: #152738;
 }
 
 .transfer-motion-panel .video-card figcaption {
