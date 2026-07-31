@@ -37,11 +37,11 @@ assets/
 
 ## Release links
 
-ArXiv remains marked `Soon`; the Code button links to the public placeholder repository:
+The ArXiv button links to the public paper PDF; the Code button links to the public placeholder repository:
 
 ```js
 window.PHIZERO_CONFIG = {
-  ARXIV_URL: "https://arxiv.org/abs/...",
+  ARXIV_URL: "https://arxiv.org/pdf/2607.28624",
   GITHUB_URL: "https://github.com/yaoyao-jpg/PhiZero",
   YEAR: "2026"
 };
